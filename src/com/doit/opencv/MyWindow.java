@@ -21,6 +21,7 @@ import com.doit.common.*;
 import com.doit.detect.AlgorithmFactory;
 import com.doit.detect.AlgorithmType;
 import com.doit.detect.BaseDetect;
+import com.doit.detect.OpencvDemo;
 
 @SuppressWarnings("serial")
 public class MyWindow extends BaseWindow {	
@@ -114,9 +115,17 @@ public class MyWindow extends BaseWindow {
 		getContentPane().add(statusPane, BorderLayout.SOUTH);*/
 		
 		JPanel bottomPane = new JPanel();
-		bottomPane.setLayout(new BorderLayout());
+		//bottomPane.setLayout(new BorderLayout());
 		JButton detectBtn = new JButton("Detect");
 		bottomPane.add(detectBtn);
+		JButton grayBtn = new JButton("Gray");
+		bottomPane.add(grayBtn);
+		JButton cannyBtn = new JButton("Canny");
+		bottomPane.add(cannyBtn);
+		JButton houghBtn = new JButton("Hough");
+		bottomPane.add(houghBtn);
+		JButton stitchBtn = new JButton("Stitch");
+		bottomPane.add(stitchBtn);
 		getContentPane().add(bottomPane, BorderLayout.SOUTH);
 		
 		detectBtn.addActionListener(new ActionListener() {
@@ -127,6 +136,19 @@ public class MyWindow extends BaseWindow {
 				Image img = method.detect("/Users/apple/Documents/workspace/OpenCV/img/iTunesArtwork.png");
 				imageBox.setIcon(new ImageIcon(img));
 				System.out.println("Detect start");
+			}
+			
+		});
+		
+		grayBtn.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				String path = "/Users/apple/Documents/workspace/OpenCV/img/iTunesArtwork.png";
+				Image origin = OpencvDemo.shareInstance().getOriginImg(path);
+				originBox.setIcon(new ImageIcon(origin));
+				Image gray = OpencvDemo.shareInstance().getGrayImg(path);
+				imageBox.setIcon(new ImageIcon(gray));
 			}
 			
 		});

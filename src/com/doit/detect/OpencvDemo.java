@@ -4,6 +4,7 @@ import java.awt.Image;
 
 import org.opencv.core.Mat;
 import org.opencv.highgui.Highgui;
+import org.opencv.imgproc.Imgproc;
 
 import com.doit.common.Utils;
 
@@ -21,5 +22,12 @@ public class OpencvDemo {
 		assert(filePath != null);
 		Mat img = Highgui.imread(filePath);
 		return Utils.toBufferedImage(img);
+	}
+	
+	public Image getGrayImg(String filePath) {
+		Mat img = Highgui.imread(filePath);
+		Mat gray = new Mat();
+		Imgproc.cvtColor(img, gray, Imgproc.COLOR_BGR2GRAY);
+		return Utils.toBufferedImage(gray);
 	}
 }
