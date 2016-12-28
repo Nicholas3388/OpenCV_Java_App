@@ -34,8 +34,9 @@ public class OpencvDemo {
 	public Image getCannyImg(String filePath) {
 		Mat img = Highgui.imread(filePath);
 		Mat gray = new Mat();
+		Mat res = new Mat();
 		Imgproc.cvtColor(img, gray, Imgproc.COLOR_BGR2GRAY);
-		
-		return null;
+		Imgproc.Canny(img, res, 45, 170);
+		return Utils.toBufferedImage(res);
 	}
 }

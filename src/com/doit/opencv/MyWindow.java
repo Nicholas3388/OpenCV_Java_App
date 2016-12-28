@@ -146,7 +146,6 @@ public class MyWindow extends BaseWindow {
 				imageBox.setIcon(new ImageIcon(img));
 				System.out.println("Detect start");
 			}
-			
 		});
 		
 		grayBtn.addActionListener(new ActionListener() {
@@ -160,7 +159,19 @@ public class MyWindow extends BaseWindow {
 				imageBox.setIcon(Utils.setImageSize(gray, imageBox.getSize().width, imageBox.getSize().height));
 				System.out.println(Utils.usedMemory());
 			}
-			
+		});
+		
+		cannyBtn.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				String path = "/Users/apple/Documents/workspace/OpenCV/img/iTunesArtwork.png";
+				Image origin = OpencvDemo.shareInstance().getOriginImg(path);
+				originBox.setIcon(Utils.setImageSize(origin, originBox.getSize().width, originBox.getSize().height));
+				Image canny = OpencvDemo.shareInstance().getCannyImg(path);
+				imageBox.setIcon(Utils.setImageSize(canny, imageBox.getSize().width, imageBox.getSize().height));
+				System.out.println(Utils.usedMemory());
+			}
 		});
 	}
 }
