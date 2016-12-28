@@ -3,7 +3,9 @@ package com.doit.opencv;
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.Color;
+import java.awt.GridLayout;
 import java.awt.Image;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -92,17 +94,24 @@ public class MyWindow extends BaseWindow {
 		mainPane.setBounds(0, 0, Constants.DEF_FRAME_WIDTH, Constants.DEF_FRAME_HEIGHT-Constants.DEF_STATUS_BAR_HEIGHT*4);
 		getContentPane().add(mainPane, BorderLayout.CENTER);
 		
+		//GridLayout grid=new GridLayout(1,2);
 		JPanel picPane = new JPanel();
+		picPane.setLayout(null);
 		picPane.setBackground(Color.BLUE);
-		picPane.setSize(640, 320);
+		//picPane.setSize(640, 320);
 		mainPane.add(picPane, "picPane");
 		
 		imageBox = new JLabel("Test");
 		//add(imageBox, BorderLayout.CENTER);
+		imageBox.setBounds(Constants.DEF_FRAME_WIDTH/4-Constants.DEF_FRAME_HEIGHT/4, Constants.DEF_FRAME_HEIGHT/4, Constants.DEF_FRAME_HEIGHT/2, Constants.DEF_FRAME_HEIGHT/2);
 		imageBox.setHorizontalAlignment(SwingConstants.CENTER);
+		imageBox.setBackground(Color.GRAY);
 		picPane.add(imageBox);
 		
 		originBox = new JLabel("origin");
+		originBox.setBounds(Constants.DEF_FRAME_WIDTH*3/4-Constants.DEF_FRAME_HEIGHT/4, Constants.DEF_FRAME_HEIGHT/4, Constants.DEF_FRAME_HEIGHT/2, Constants.DEF_FRAME_HEIGHT/2);
+		originBox.setHorizontalAlignment(SwingConstants.CENTER);
+		originBox.setBackground(Color.GRAY);
 		picPane.add(originBox);
 		
 		// status bar
@@ -114,7 +123,7 @@ public class MyWindow extends BaseWindow {
 		statusPane.add(toolBar, BorderLayout.NORTH);
 		getContentPane().add(statusPane, BorderLayout.SOUTH);*/
 		
-		JPanel bottomPane = new JPanel();
+		JPanel bottomPane = new JPanel(new GridLayout(1, 5));
 		//bottomPane.setLayout(new BorderLayout());
 		JButton detectBtn = new JButton("Detect");
 		bottomPane.add(detectBtn);
@@ -146,9 +155,10 @@ public class MyWindow extends BaseWindow {
 				// TODO Auto-generated method stub
 				String path = "/Users/apple/Documents/workspace/OpenCV/img/iTunesArtwork.png";
 				Image origin = OpencvDemo.shareInstance().getOriginImg(path);
-				originBox.setIcon(new ImageIcon(origin));
+				originBox.setIcon(Utils.setImageSize(origin, originBox.getSize().width, originBox.getSize().height));
 				Image gray = OpencvDemo.shareInstance().getGrayImg(path);
-				imageBox.setIcon(new ImageIcon(gray));
+				imageBox.setIcon(Utils.setImageSize(gray, imageBox.getSize().width, imageBox.getSize().height));
+				System.out.println(Utils.usedMemory());
 			}
 			
 		});

@@ -30,4 +30,12 @@ public class OpencvDemo {
 		Imgproc.cvtColor(img, gray, Imgproc.COLOR_BGR2GRAY);
 		return Utils.toBufferedImage(gray);
 	}
+	
+	public Image getCannyImg(String filePath) {
+		Mat img = Highgui.imread(filePath);
+		Mat gray = new Mat();
+		Imgproc.cvtColor(img, gray, Imgproc.COLOR_BGR2GRAY);
+		
+		return null;
+	}
 }

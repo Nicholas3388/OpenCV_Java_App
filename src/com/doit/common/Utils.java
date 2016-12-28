@@ -4,6 +4,7 @@ import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferByte;
 
+import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
@@ -38,5 +39,11 @@ public class Utils {
 		final byte[] targetPixels = ((DataBufferByte) image.getRaster().getDataBuffer()).getData();
 		System.arraycopy(buffer, 0, targetPixels, 0, buffer.length);
 		return image;
+	}
+	
+	public static ImageIcon setImageSize(Image img, int width, int height) {
+		ImageIcon icon = new ImageIcon(img);
+		icon.setImage(icon.getImage().getScaledInstance(width, height, icon.getImage().SCALE_DEFAULT));
+		return icon;
 	}
 }
