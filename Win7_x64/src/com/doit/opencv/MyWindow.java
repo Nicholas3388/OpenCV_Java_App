@@ -56,6 +56,9 @@ public class MyWindow extends BaseWindow {
 		});
 		
 		dbgFrame = DebugWindow.shareInstance();
+		if (!Config.DEBUG_ENABLE) {
+			dbgFrame.setVisible(false);
+		}
 	}
 	
 	private void windowLayout() {
@@ -201,10 +204,9 @@ public class MyWindow extends BaseWindow {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
-				String path = "";
-				Image origin = OpencvDemo.shareInstance().getOriginImg(path);
+				Image origin = OpencvDemo.shareInstance().getOriginImg(Constants.testFile);
 				originBox.setIcon(Utils.setImageSize(origin, originBox.getSize().width, originBox.getSize().height));
-				Image gray = OpencvDemo.shareInstance().getGrayImg(path);
+				Image gray = OpencvDemo.shareInstance().getGrayImg(Constants.testFile);
 				imageBox.setIcon(Utils.setImageSize(gray, imageBox.getSize().width, imageBox.getSize().height));
 				dbgFrame.println(Utils.usedMemory());
 			}
@@ -218,6 +220,18 @@ public class MyWindow extends BaseWindow {
 				originBox.setIcon(Utils.setImageSize(origin, originBox.getSize().width, originBox.getSize().height));
 				Image canny = OpencvDemo.shareInstance().getCannyImg(Constants.testFile);
 				imageBox.setIcon(Utils.setImageSize(canny, imageBox.getSize().width, imageBox.getSize().height));
+				dbgFrame.println(Utils.usedMemory());
+			}
+		});
+		
+		houghBtn.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				// TODO Auto-generated method stub
+				Image origin = OpencvDemo.shareInstance().getOriginImg(Constants.testFile2);
+				originBox.setIcon(Utils.setImageSize(origin, originBox.getSize().width, originBox.getSize().height));
+				Image hough = OpencvDemo.shareInstance().getHoughImg(Constants.testFile2);
+				imageBox.setIcon(Utils.setImageSize(hough, imageBox.getSize().width, imageBox.getSize().height));
 				dbgFrame.println(Utils.usedMemory());
 			}
 		});
@@ -266,7 +280,20 @@ public class MyWindow extends BaseWindow {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
-				
+				Image origin = OpencvDemo.shareInstance().getOriginImg(Constants.testFile2);
+				originBox.setIcon(Utils.setImageSize(origin, originBox.getSize().width, originBox.getSize().height));
+				Mat img = Highgui.imread(Constants.testFile2);
+				// set ROI to crop image
+				Rect roi = new Rect(70, 70, 100, 100);
+				Mat cropImg = img.submat(roi);
+				Mat res = new Mat();
+				Imgproc.cvtColor(cropImg, res, Imgproc.COLOR_BGR2GRAY);
+				Mat temp = new Mat();
+				Imgproc.pyrDown(res, temp);
+				Imgproc.pyrUp(temp, res);
+				Imgproc.Canny(res, res, 45, 170);
+				imageBox.setIcon(Utils.setImageSize(Utils.toBufferedImage(res), imageBox.getSize().width, imageBox.getSize().height));
+				dbgFrame.println(Utils.usedMemory());
 			}
 		});
 	}

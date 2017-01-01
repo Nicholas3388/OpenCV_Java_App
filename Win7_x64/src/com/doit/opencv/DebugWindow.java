@@ -1,7 +1,6 @@
 package com.doit.opencv;
 
 import java.awt.Color;
-
 import javax.swing.JEditorPane;
 
 import com.doit.common.Constants;
@@ -36,11 +35,13 @@ public class DebugWindow extends BaseWindow {
 	}
 	
 	public void println(String str) {
+		if (!Config.DEBUG_ENABLE) { return; }
 		String content = editorPane.getText().toString();
 		editorPane.setText(content + str + "\r\n");
 	}
 	
 	public void println(long num) {
+		if (!Config.DEBUG_ENABLE) { return; }
 		String content = editorPane.getText().toString();
 		editorPane.setText(content + String.valueOf(num) + "\r\n");
 	}
