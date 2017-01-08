@@ -21,15 +21,6 @@ public class BaseWindow extends JFrame {
 		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 		setTitle(name);
 		setBounds(screenSize.width/2-width/2, screenSize.height/2-height/2, width, height);
-		
-		addWindowListener(new WindowAdapter() {
-	          @Override
-	          public void windowClosing(WindowEvent e)
-	          {
-	        	  System.out.println("Exit app");
-	        	  System.exit(0);
-	          }
-	    });
 	}
 
 }
