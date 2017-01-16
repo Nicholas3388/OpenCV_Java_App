@@ -5,11 +5,11 @@ import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.GridLayout;
 import java.awt.Image;
-import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.util.Vector;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -21,11 +21,14 @@ import javax.swing.JPanel;
 import javax.swing.JToolBar;
 import javax.swing.SwingConstants;
 
+import org.opencv.core.Core;
 import org.opencv.core.Mat;
 import org.opencv.core.Rect;
+import org.opencv.core.Size;
 import org.opencv.highgui.Highgui;
 import org.opencv.imgproc.Imgproc;
 
+import com.doit.calibrate.CamCalibrate;
 import com.doit.common.*;
 import com.doit.detect.AlgorithmFactory;
 import com.doit.detect.AlgorithmType;
@@ -59,6 +62,8 @@ public class MyWindow extends BaseWindow {
 		if (!Config.DEBUG_ENABLE) {
 			dbgFrame.setVisible(false);
 		}
+		
+		DebugWindow.shareInstance().println("OpenCV version: " + Core.VERSION);
 	}
 	
 	private void windowLayout() {
@@ -138,7 +143,7 @@ public class MyWindow extends BaseWindow {
 		//GridLayout grid=new GridLayout(1,2);
 		JPanel picPane = new JPanel();
 		picPane.setLayout(null);
-		picPane.setBackground(Color.BLUE);
+		picPane.setBackground(Color.GRAY);
 		//picPane.setSize(640, 320);
 		mainPane.add(picPane, "picPane");
 		
@@ -167,7 +172,7 @@ public class MyWindow extends BaseWindow {
 		statusPane.add(toolBar, BorderLayout.NORTH);
 		getContentPane().add(statusPane, BorderLayout.SOUTH);*/
 		
-		JPanel bottomPane = new JPanel(new GridLayout(0, 4));
+		JPanel bottomPane = new JPanel(new GridLayout(0, 5));
 		//bottomPane.setLayout(new BorderLayout());
 		JButton detectBtn = new JButton("Detect");
 		bottomPane.add(detectBtn);
@@ -187,6 +192,22 @@ public class MyWindow extends BaseWindow {
 		bottomPane.add(centroidBtn);
 		JButton findCircleBtn = new JButton("Find Circle");
 		bottomPane.add(findCircleBtn);
+		JButton calibrateBtn = new JButton("Calibrate");
+		bottomPane.add(calibrateBtn);
+		JButton erodeBtn = new JButton("Erode");
+		bottomPane.add(erodeBtn);
+		JButton delateBtn = new JButton("Delate");
+		bottomPane.add(delateBtn);
+		JButton edgeBtn = new JButton("Edge");
+		bottomPane.add(edgeBtn);
+		JButton morphologyBtn = new JButton("Morphology");
+		bottomPane.add(morphologyBtn);
+		JButton burrBtn = new JButton("Burr");
+		bottomPane.add(burrBtn);
+		JButton thinningBtn = new JButton("Thinning");
+		bottomPane.add(thinningBtn);
+		JButton matchBtn = new JButton("Match");
+		bottomPane.add(matchBtn);
 		getContentPane().add(bottomPane, BorderLayout.SOUTH);
 		
 		detectBtn.addActionListener(new ActionListener() {
@@ -233,6 +254,20 @@ public class MyWindow extends BaseWindow {
 				Image hough = OpencvDemo.shareInstance().getHoughImg(Constants.testFile2);
 				imageBox.setIcon(Utils.setImageSize(hough, imageBox.getSize().width, imageBox.getSize().height));
 				dbgFrame.println(Utils.usedMemory());
+			}
+		});
+		
+		stitchBtn.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				Vector<String> fileList = new Vector<String>();
+				for (int i = 0; i < Constants.STITCH_IMG_NUM; i++) {
+					fileList.add("D:\\w\\workspace\\JavaOpenCV\\img\\p" + (i + 1) + ".jpg");
+				}
+				Mat stitched = OpencvDemo.shareInstance().getStichImage(fileList);
+				Highgui.imwrite("D:\\w\\workspace\\JavaOpenCV\\img\\stitched.jpg", stitched);
+				Utils.messageBox(null, "Stitched image generated", "OpenCV");
 			}
 		});
 		
@@ -294,6 +329,102 @@ public class MyWindow extends BaseWindow {
 				Imgproc.Canny(res, res, 45, 170);
 				imageBox.setIcon(Utils.setImageSize(Utils.toBufferedImage(res), imageBox.getSize().width, imageBox.getSize().height));
 				dbgFrame.println(Utils.usedMemory());
+			}
+		});
+		
+		calibrateBtn.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				// TODO Auto-generated method stub
+				Vector<String> filelist = new Vector<String>();
+				for (int i = 0; i < Constants.CALIB_IMG_NUM; i++) {
+					filelist.add("D:\\w\\workspace\\JavaOpenCV\\img\\distort" + (i + 1) + ".jpg");
+				}
+				Mat img = Highgui.imread("D:\\w\\workspace\\JavaOpenCV\\img\\distort1.jpg", 0);
+				Size boardSize = new Size(9, 6);
+				CamCalibrate.shareInstance().addChessboardPoints(filelist, boardSize);
+				CamCalibrate.shareInstance().calibrate(img.size());
+				
+				// remap
+				Mat uImg = CamCalibrate.shareInstance().remap(img);
+				Highgui.imwrite("D:\\w\\workspace\\JavaOpenCV\\img\\undistort.jpg", uImg);
+				Utils.messageBox(null, "Undistorted image generated", "OpenCV");
+			}
+		});
+		
+		erodeBtn.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				// TODO Auto-generated method stub
+				Image origin = OpencvDemo.shareInstance().getOriginImg(Constants.testFile2);
+				originBox.setIcon(Utils.setImageSize(origin, originBox.getSize().width, originBox.getSize().height));
+				Image erodeImg = OpencvDemo.shareInstance().getErodeImage(Constants.testFile2);
+				imageBox.setIcon(Utils.setImageSize(erodeImg, imageBox.getSize().width, imageBox.getSize().height));
+			}
+		});
+		
+		delateBtn.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				Image origin = OpencvDemo.shareInstance().getOriginImg(Constants.testFile2);
+				originBox.setIcon(Utils.setImageSize(origin, originBox.getSize().width, originBox.getSize().height));
+				Image dilateImg = OpencvDemo.shareInstance().getDilateImage(Constants.testFile2);
+				imageBox.setIcon(Utils.setImageSize(dilateImg, imageBox.getSize().width, imageBox.getSize().height));
+			}
+		});
+		
+		edgeBtn.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				Image origin = OpencvDemo.shareInstance().getOriginImg(Constants.testFile);
+				originBox.setIcon(Utils.setImageSize(origin, originBox.getSize().width, originBox.getSize().height));
+				Image dilateImg = OpencvDemo.shareInstance().getEdgeImage(Constants.testFile);
+				imageBox.setIcon(Utils.setImageSize(dilateImg, imageBox.getSize().width, imageBox.getSize().height));
+			}
+		});
+		
+		morphologyBtn.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				// TODO Auto-generated method stub
+				Image origin = OpencvDemo.shareInstance().getOriginImg(Constants.testFile);
+				originBox.setIcon(Utils.setImageSize(origin, originBox.getSize().width, originBox.getSize().height));
+				Image morphImg = OpencvDemo.shareInstance().getMorphImage(Constants.testFile);
+				imageBox.setIcon(Utils.setImageSize(morphImg, imageBox.getSize().width, imageBox.getSize().height));
+			}
+		});
+		
+		burrBtn.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				// TODO Auto-generated method stub
+				Mat res = OpencvDemo.shareInstance().burrDetect(Constants.burrTest);
+				Highgui.imwrite("D:\\w\\workspace\\JavaOpenCV\\img\\burrFilter.png", res);
+				Utils.messageBox(null, "Complete", "OpenCV");
+			}
+		});
+		
+		thinningBtn.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				Mat src = Highgui.imread("D:\\w\\workspace\\JavaOpenCV\\img\\burr2.png");
+				Mat res = OpencvDemo.shareInstance().thinning(src, 15, false);
+				Highgui.imwrite("D:\\w\\workspace\\JavaOpenCV\\img\\thinning.png", res);
+				Utils.messageBox(null, "Complete", "OpenCV");
+			}
+		});
+		
+		matchBtn.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				Mat scene = Highgui.imread(Constants.matchImg2);
+				Mat object = Highgui.imread(Constants.matchImg1);
+				OpencvDemo.shareInstance().match(scene, object);
+				Utils.messageBox(null, "Complete", "OpenCV");
 			}
 		});
 	}
